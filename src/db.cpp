@@ -179,7 +179,7 @@ void static CloseDb(const string& strFile)
             // Close the database handle
             Db* pdb = mapDb[strFile];
             pdb->close(0);
-            delete pdb;
+            //delete pdb;
             mapDb[strFile] = NULL;
         }
     }

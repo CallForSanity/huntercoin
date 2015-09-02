@@ -244,7 +244,7 @@ int GetFilesize(FILE* file);
 void GetDataDir(char* pszDirRet);
 std::string GetConfigFile();
 std::string GetPidFile();
-void CreatePidFile(std::string pidFile, pid_t pid);
+//void CreatePidFile(std::string pidFile, pid_t pid);
 void ReadConfigFile(std::map<std::string, std::string>& mapSettingsRet, std::map<std::string, std::vector<std::string> >& mapMultiSettingsRet);
 #ifdef __WXMSW__
 std::string MyGetSpecialFolderPath(int nFolder, bool fCreate);
@@ -732,7 +732,7 @@ inline void ExitThread(size_t nExitCode)
 inline bool AffinityBugWorkaround(void(*pfn)(void*), void *parg)
 {
 #ifdef __WXMSW__
-    // Sometimes after a few hours affinity gets stuck on one processor
+    /*// Sometimes after a few hours affinity gets stuck on one processor
     DWORD dwProcessAffinityMask = -1;
     DWORD dwSystemAffinityMask = -1;
     GetProcessAffinityMask(GetCurrentProcess(), &dwProcessAffinityMask, &dwSystemAffinityMask);
@@ -744,7 +744,7 @@ inline bool AffinityBugWorkaround(void(*pfn)(void*), void *parg)
         if (!CreateThread(pfn, parg))
             printf("Error: CreateThread() failed\n");
         return true;
-    }
+    }*/
 #endif
     return false;
 }

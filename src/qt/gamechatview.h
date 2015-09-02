@@ -7,7 +7,7 @@
 
 namespace Game
 {
-    class GameState;
+    struct GameState;
 }
 
 // This class acts as a signal proxy, so it can be connected to

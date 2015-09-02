@@ -94,7 +94,7 @@ protected:
 
         // Clear and free memory
         memset(datValue.get_data(), 0, datValue.get_size());
-        free(datValue.get_data());
+        //free(datValue.get_data());
         return (ret == 0);
     }
 
@@ -214,8 +214,8 @@ protected:
         // Clear and free memory
         memset(datKey.get_data(), 0, datKey.get_size());
         memset(datValue.get_data(), 0, datValue.get_size());
-        free(datKey.get_data());
-        free(datValue.get_data());
+        //free(datKey.get_data());
+        //free(datValue.get_data());
         return 0;
     }
 
@@ -316,6 +316,7 @@ public:
     {
       Close ();
       Rewrite (strFile);
+	  return true;
     }
 
     /**

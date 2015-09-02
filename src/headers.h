@@ -56,14 +56,16 @@
 #endif
 
 #ifdef __WXMSW__
-#include <windows.h>
 #include <winsock2.h>
-#include <mswsock.h>
+//#include <mswsock.h>
 #include <shlobj.h>
 #include <shlwapi.h>
 #include <io.h>
 #include <process.h>
 #include <malloc.h>
+#include <windows.h>
+#undef min
+#undef max
 #else
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -98,6 +100,14 @@ typedef std::vector<unsigned char> vchType;
 #include "ui.h"
 #else
 #include "noui.h"
+#endif
+
+#ifndef __func__
+#define __func__ __FUNCTION__
+#endif
+
+#ifndef __PRETTY_FUNCTION__
+#define __PRETTY_FUNCTION__ __FUNCTION__
 #endif
 
 #endif

@@ -727,7 +727,8 @@ void ManageNamesPage::RefreshCharacterList()
     if (characterTableModel)
         characterTableModel->deleteLater();
 
-    std::map<Game::PlayerID, Game::PlayerState>::const_iterator it = gameState.players.find(selectedPlayer.toStdString());
+	// from https://www.assembla.com/spaces/plus/messages/1093143
+	std::map<Game::PlayerID, Game::PlayerState>::const_iterator it = gameState.players.find(selectedPlayer.toAscii().data());
     if (it != gameState.players.end())
     {
         // Note: pointer to queuedMoves is saved and must stay valid while the character table is visible

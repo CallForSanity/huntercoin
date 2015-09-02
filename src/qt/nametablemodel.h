@@ -14,7 +14,7 @@ extern const QString NON_REWARD_ADDRESS_PREFIX;
 
 namespace Game
 {
-    class GameState;
+    struct GameState;
 }
 
 /**

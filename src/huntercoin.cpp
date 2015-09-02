@@ -2418,7 +2418,7 @@ CHuntercoinHooks::ConnectInputs (DatabaseSet& dbset,
 
     bool found = false;
 
-    int prevHeight, prevOp;
+    int prevHeight = -1, prevOp;
     int64_t prevCoinAmount = -1;
     std::vector<vchType> vvchPrevArgs;
 

@@ -4,6 +4,7 @@
 #include "headers.h"
 #include "strlcpy.h"
 #ifndef Q_MOC_RUN
+#include <boost/program_options.hpp>
 #include <boost/program_options/detail/config_file.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -998,6 +999,8 @@ string GetConfigFile()
 {
     return GetConfigFile("huntercoin.conf");
 }
+
+const unsigned boost::program_options::options_description::m_default_line_length = 80;
 
 void ReadConfigFile(map<string, string>& mapSettingsRet,
                     map<string, vector<string> >& mapMultiSettingsRet)
