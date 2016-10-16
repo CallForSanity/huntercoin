@@ -248,8 +248,8 @@ bool CheckLinearPath(const Game::Coord &start, const Game::Coord &target)
     CharacterState tmp;
     tmp.from = tmp.coord = start;
     tmp.waypoints.push_back(target);
-    while (!tmp.waypoints.empty())
-        tmp.MoveTowardsWaypoint();
+    //while (!tmp.waypoints.empty())
+    //    tmp.MoveTowardsWaypoint();
     return tmp.coord == target;
 }
 

@@ -475,11 +475,11 @@ void GameMapView::updateGameMap(const GameState &gameState)
         banks.push_back (r);
       }
 
-    gameMapCache->StartCachedScene();
-    BOOST_FOREACH(const PAIRTYPE(Coord, LootInfo) &loot, gameState.loot)
-        gameMapCache->PlaceCoin(loot.first, loot.second.nAmount);
-    BOOST_FOREACH(const Coord &h, gameState.hearts)
-        gameMapCache->PlaceHeart(h);
+    //gameMapCache->StartCachedScene();
+    //BOOST_FOREACH(const PAIRTYPE(Coord, LootInfo) &loot, gameState.loot)
+    //    gameMapCache->PlaceCoin(loot.first, loot.second.nAmount);
+    //BOOST_FOREACH(const Coord &h, gameState.hearts)
+    //    gameMapCache->PlaceHeart(h);
 
     // Sort by coordinate bottom-up, so the stacking (multiple players on tile) looks correct
     std::multimap<Coord, CharacterEntry> sortedPlayers;
@@ -504,36 +504,36 @@ void GameMapView::updateGameMap(const GameState &gameState)
         }
     }
 
-    Coord prev_coord;
-    int offs = -1;
-    BOOST_FOREACH(const PAIRTYPE(Coord, CharacterEntry) &data, sortedPlayers)
-    {
-        const QString &playerName = data.second.name;
-        const CharacterState &characterState = *data.second.state;
-        const Coord &coord = characterState.coord;
+    //Coord prev_coord;
+    //int offs = -1;
+    //BOOST_FOREACH(const PAIRTYPE(Coord, CharacterEntry) &data, sortedPlayers)
+    //{
+    //    const QString &playerName = data.second.name;
+    //    const CharacterState &characterState = *data.second.state;
+    //    const Coord &coord = characterState.coord;
 
-        if (offs >= 0 && coord == prev_coord)
-            offs++;
-        else
-        {
-            prev_coord = coord;
-            offs = 0;
-        }
+    //    if (offs >= 0 && coord == prev_coord)
+    //        offs++;
+    //    else
+    //    {
+    //        prev_coord = coord;
+    //        offs = 0;
+    //    }
 
-        int x = coord.x * TILE_SIZE + offs;
-        int y = coord.y * TILE_SIZE + offs * 2;
+    //    int x = coord.x * TILE_SIZE + offs;
+    //    int y = coord.y * TILE_SIZE + offs * 2;
 
-        gameMapCache->AddPlayer(playerName, x, y, 1 + offs, data.second.color, characterState.dir, characterState.loot.nAmount);
-    }
-    gameMapCache->EndCachedScene();
+    //    gameMapCache->AddPlayer(playerName, x, y, 1 + offs, data.second.color, characterState.dir, characterState.loot.nAmount);
+    //}
+    //gameMapCache->EndCachedScene();
 
-    if (!gameState.crownHolder.player.empty())
-        crown->hide();
-    else
-    {
-        crown->show();
-        crown->setOffset(gameState.crownPos.x * TILE_SIZE, gameState.crownPos.y * TILE_SIZE);
-    }
+    //if (!gameState.crownHolder.player.empty())
+    //    crown->hide();
+    //else
+    //{
+    //    crown->show();
+    //    crown->setOffset(gameState.crownPos.x * TILE_SIZE, gameState.crownPos.y * TILE_SIZE);
+    //}
 
     //scene->invalidate();
     repaint(rect());
@@ -568,30 +568,30 @@ void GameMapView::SelectPlayer(const QString &name, const GameState &state, Queu
     if (mi == state.players.end())
         return;
 
-    BOOST_FOREACH(const PAIRTYPE(int, CharacterState) &pc, mi->second.characters)
-    {
-        int i = pc.first;
-        const CharacterState &ch = pc.second;
+	BOOST_FOREACH(const PAIRTYPE(int, CharacterState) &pc, mi->second.characters)
+	{
+		int i = pc.first;
+		const CharacterState &ch = pc.second;
 
-        DrawPath(ch.DumpPath(), path);
+		DrawPath(ch.DumpPath(), path);
 
-        std::vector<Coord> *p = UpdateQueuedPath(ch, queuedMoves, CharacterID(mi->first, i));
-        if (p)
-        {
-            std::vector<Coord> wp = PathToCharacterWaypoints(*p);
-            DrawPath(ch.DumpPath(&wp), queuedPath);
-        }
-    }
-    if (!path.isEmpty())
-    {
-        playerPath = scene->addPath(path, grobjs->magenta_pen);
-        playerPath->setZValue(1e9 + 1);
-    }
-    if (!queuedPath.isEmpty())
-    {
-        queuedPlayerPath = scene->addPath(queuedPath, grobjs->gray_pen);
-        queuedPlayerPath->setZValue(1e9 + 2);
-    }
+		std::vector<Coord> *p = UpdateQueuedPath(ch, queuedMoves, CharacterID(mi->first, i));
+		if (p)
+		{
+			std::vector<Coord> wp = PathToCharacterWaypoints(*p);
+			DrawPath(ch.DumpPath(&wp), queuedPath);
+		}
+	}
+	if (!path.isEmpty())
+	{
+		playerPath = scene->addPath(path, grobjs->magenta_pen);
+		playerPath->setZValue(1e9 + 1);
+	}
+	if (!queuedPath.isEmpty())
+	{
+		queuedPlayerPath = scene->addPath(queuedPath, grobjs->gray_pen);
+		queuedPlayerPath->setZValue(1e9 + 2);
+	}
 
     use_cross_cursor = true;
     if (!panning)

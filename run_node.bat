@@ -1,0 +1,1 @@
+owngamecoin.exe -datadir="C:\Users\Patrick\DerivedFiles\Build\vs12_32\owngamecoin\Release\datadir" -connect=0

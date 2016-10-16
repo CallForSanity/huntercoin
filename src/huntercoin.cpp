@@ -627,20 +627,20 @@ Value name_list(const Array& params, bool fHelp)
             assert (nHeight >= 0);
 
             /* Process game transactions to fill in the killedAt array.  */
-            if (tx.IsGameTx ())
-              {
-                BOOST_FOREACH(const CTxIn& txi, tx.vin)
-                  if (IsPlayerDeathInput (txi, vchName))
-                    {
-                      std::map<vchType, int>::iterator pos;
-                      pos = killedAt.find (vchName);
-                      if (pos == killedAt.end ())
-                        killedAt.insert (std::make_pair (vchName, nHeight));
-                      else if (pos->second < nHeight)
-                        pos->second = nHeight;
-                    }
-                continue;
-              }
+            //if (tx.IsGameTx ())
+            //  {
+            //    BOOST_FOREACH(const CTxIn& txi, tx.vin)
+            //      if (IsPlayerDeathInput (txi, vchName))
+            //        {
+            //          std::map<vchType, int>::iterator pos;
+            //          pos = killedAt.find (vchName);
+            //          if (pos == killedAt.end ())
+            //            killedAt.insert (std::make_pair (vchName, nHeight));
+            //          else if (pos->second < nHeight)
+            //            pos->second = nHeight;
+            //        }
+            //    continue;
+            //  }
 
             vchType vchValue;
             int nOut;
@@ -1012,12 +1012,14 @@ Value name_scan(const Array& params, bool fHelp)
 int64_t
 GetRequiredGameFee (const vchType& vchName, const vchType& vchValue)
 {
-  Game::Move m;
-  m.Parse (stringFromVch (vchName), stringFromVch (vchValue));
-  if (!m)
-    throw JSONRPCError(RPC_INVALID_PARAMETER, "invalid move");
+  //Game::Move m;
+  //m.Parse (stringFromVch (vchName), stringFromVch (vchValue));
+  //if (!m)
+  //  throw JSONRPCError(RPC_INVALID_PARAMETER, "invalid move");
 
-  return m.MinimumGameFee (pindexBest->nHeight + 1);
+  //return m.MinimumGameFee (pindexBest->nHeight + 1);
+
+	return 0;
 }
 
 Value name_firstupdate(const Array& params, bool fHelp)
@@ -1933,7 +1935,8 @@ analyseutxo (const Array& params, bool fHelp)
   /* Also calculate total number of coins on the map, so that we get the total
      money supply and can check it.  */
   const Game::GameState& state = GetCurrentGameState ();
-  const int64 onMap = state.GetCoinsOnMap ();
+  //const int64 onMap = state.GetCoinsOnMap ();
+  const int64 onMap = 0;
   const int64 gameFund = state.gameFund;
   const int64 rewards = pindexBest->GetTotalRewards ();
 
@@ -2358,14 +2361,14 @@ ConnectInputsGameTx (DatabaseSet& dbset,
         if (tx.vin[i].prevout.IsNull ())
           continue;
 
-        vchType name;
-        if (!IsPlayerDeathInput (tx.vin[i], name))
-          return error ("ConnectInputsGameTx: prev is no player death");
+        //vchType name;
+        //if (!IsPlayerDeathInput (tx.vin[i], name))
+        //  return error ("ConnectInputsGameTx: prev is no player death");
 
-        CNameIndex nidx(txPos, pindexBlock->nHeight,
-                        vchFromString (VALUE_DEAD));
-        if (!dbset.name ().PushEntry (name, nidx))
-          return error ("ConnectInputsGameTx: failed to write to name DB");
+        //CNameIndex nidx(txPos, pindexBlock->nHeight,
+        //                vchFromString (VALUE_DEAD));
+        //if (!dbset.name ().PushEntry (name, nidx))
+        //  return error ("ConnectInputsGameTx: failed to write to name DB");
     }
 
     return true;
@@ -2384,12 +2387,12 @@ DisconnectInputsGameTx (DatabaseSet& dbset, const CTransaction& tx,
         if (tx.vin[i].prevout.IsNull ())
           continue;
 
-        vchType name;
-        if (!IsPlayerDeathInput (tx.vin[i], name))
-          return error ("DisconnectInputsGameTx: prev is no player death");
+        //vchType name;
+        //if (!IsPlayerDeathInput (tx.vin[i], name))
+        //  return error ("DisconnectInputsGameTx: prev is no player death");
 
-        if (!dbset.name ().PopEntry (name, pindexBlock->nHeight))
-          return error ("DisconnectInputsGameTx: failed to pop entry");
+        //if (!dbset.name ().PopEntry (name, pindexBlock->nHeight))
+        //  return error ("DisconnectInputsGameTx: failed to pop entry");
       }
 
     return true;
@@ -2871,7 +2874,7 @@ bool CHuntercoinHooks::GenesisBlock(CBlock& block)
     if (fTestNet)
     {
         txNew.vin[0].scriptSig = CScript() << vchFromString("\nHuntercoin test net\n");
-        txNew.vout[0].scriptPubKey.SetBitcoinAddress("hRDGZuirWznh25mqZM5bKmeEAcw7dmDwUx");
+        txNew.vout[0].scriptPubKey.SetBitcoinAddress("hRDGZuirWznh25mqZM5bKmeEAcw7dmDwUx"); // TODO set own keypair here
         txNew.vout[0].nValue = 100 * COIN;     // Preallocated coins for easy testing and giveaway
         block.nTime    = 1391193136;
         block.nNonce   = 1997599826u;

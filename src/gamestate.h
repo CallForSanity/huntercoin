@@ -128,12 +128,12 @@ struct Move
 
     std::string AddressOperationPermission(const GameState &state) const;
 
-    bool IsSpawn() const { return color != 0xFF; }
-    bool IsValid(const GameState &state) const;
-    void ApplyCommon(GameState &state) const;
-    void ApplySpawn(GameState &state, RandomGenerator &rnd) const;
-    void ApplyWaypoints(GameState &state) const;
-    bool IsAttack(const GameState &state, int character_index) const;
+    //bool IsSpawn() const { return color != 0xFF; }
+    //bool IsValid(const GameState &state) const;
+    //void ApplyCommon(GameState &state) const;
+    //void ApplySpawn(GameState &state, RandomGenerator &rnd) const;
+    //void ApplyWaypoints(GameState &state) const;
+    //bool IsAttack(const GameState &state, int character_index) const;
  
     // Move must be empty before Parse and cannot be reused after Parse
     bool Parse(const PlayerID &player, const std::string &json);
@@ -141,13 +141,13 @@ struct Move
     // Returns true if move is initialized (i.e. was parsed successfully)
     operator bool() { return !player.empty(); }
 
-    /**
-     * Return the minimum required "game fee" for this move.  The block height
-     * must be passed because it is used to decide about hardfork states.
-     * @param nHeight Block height at which this move is.
-     * @return Minimum required game fee payment.
-     */
-    int64_t MinimumGameFee (unsigned nHeight) const;
+    ///**
+    // * Return the minimum required "game fee" for this move.  The block height
+    // * must be passed because it is used to decide about hardfork states.
+    // * @param nHeight Block height at which this move is.
+    // * @return Minimum required game fee payment.
+    // */
+    //int64_t MinimumGameFee (unsigned nHeight) const;
 };
 
 /**
@@ -155,98 +155,98 @@ struct Move
  * Keep track of all attackers, so that we can both construct the killing gametx
  * and also handle life-stealing.
  */
-struct AttackableCharacter
-{
-
-  /** The character this represents.  */
-  CharacterID chid;
-
-  /** The character's colour.  */
-  unsigned char color;
-
-  /**
-   * Amount of coins already drawn from the attacked character's life.
-   * This is the value that can be redistributed to the attackers.
-   */
-  int64_t drawnLife;
-
-  /** All attackers that hit it.  */
-  std::set<CharacterID> attackers;
-
-  /**
-   * Perform an attack by the given character.  Its ID and state must
-   * correspond to the same attacker.
-   */
-  void AttackBy (const CharacterID& attackChid, const PlayerState& pl);
-
-  /**
-   * Handle self-effect of destruct.  The game state's height is used
-   * to determine whether or not this has an effect (before the life-steal
-   * fork).
-   */
-  void AttackSelf (const GameState& state);
-
-};
-
-/**
- * Hold the map from tiles to attackable characters.  This is built lazily
- * when attacks are done, so that we can save the processing time if not.
- */
-struct CharactersOnTiles
-{
-
-  /** The map type used.  */
-  typedef std::multimap<Coord, AttackableCharacter> Map;
-
-  /** The actual map.  */
-  Map tiles;
-
-  /** Whether it is already built.  */
-  bool built;
-
-  /**
-   * Construct an empty object.
-   */
-  inline CharactersOnTiles ()
-    : tiles(), built(false)
-  {}
-
-  /**
-   * Build it from the game state if not yet built.
-   * @param state The game state from which to extract characters.
-   */
-  void EnsureIsBuilt (const GameState& state);
-
-  /**
-   * Perform all attacks in the moves.
-   * @param state The current game state to build it if necessary.
-   * @param moves All moves in the step.
-   */
-  void ApplyAttacks (const GameState& state, const std::vector<Move>& moves);
-
-  /**
-   * Deduct life from attached characters.  This also handles killing
-   * of those with too many attackers, including pre-life-steal.
-   * @param state The game state, will be modified.
-   * @param result The step result object to fill in.
-   */
-  void DrawLife (GameState& state, StepResult& result);
-
-  /**
-   * Remove mutual attacks from the attacker arrays.
-   * @param state The state to look up players.
-   */
-  void DefendMutualAttacks (const GameState& state);
-
-  /**
-   * Give drawn life back to attackers.  If there are more attackers than
-   * available coins, distribute randomly.
-   * @param rnd The RNG to use.
-   * @param state The state to update.
-   */
-  void DistributeDrawnLife (RandomGenerator& rnd, GameState& state) const;
-
-};
+//struct AttackableCharacter
+//{
+//
+//  /** The character this represents.  */
+//  CharacterID chid;
+//
+//  /** The character's colour.  */
+//  unsigned char color;
+//
+//  /**
+//   * Amount of coins already drawn from the attacked character's life.
+//   * This is the value that can be redistributed to the attackers.
+//   */
+//  int64_t drawnLife;
+//
+//  /** All attackers that hit it.  */
+//  std::set<CharacterID> attackers;
+//
+//  /**
+//   * Perform an attack by the given character.  Its ID and state must
+//   * correspond to the same attacker.
+//   */
+//  void AttackBy (const CharacterID& attackChid, const PlayerState& pl);
+//
+//  /**
+//   * Handle self-effect of destruct.  The game state's height is used
+//   * to determine whether or not this has an effect (before the life-steal
+//   * fork).
+//   */
+//  void AttackSelf (const GameState& state);
+//
+//};
+//
+///**
+// * Hold the map from tiles to attackable characters.  This is built lazily
+// * when attacks are done, so that we can save the processing time if not.
+// */
+//struct CharactersOnTiles
+//{
+//
+//  /** The map type used.  */
+//  typedef std::multimap<Coord, AttackableCharacter> Map;
+//
+//  /** The actual map.  */
+//  Map tiles;
+//
+//  /** Whether it is already built.  */
+//  bool built;
+//
+//  /**
+//   * Construct an empty object.
+//   */
+//  inline CharactersOnTiles ()
+//    : tiles(), built(false)
+//  {}
+//
+//  /**
+//   * Build it from the game state if not yet built.
+//   * @param state The game state from which to extract characters.
+//   */
+//  void EnsureIsBuilt (const GameState& state);
+//
+//  /**
+//   * Perform all attacks in the moves.
+//   * @param state The current game state to build it if necessary.
+//   * @param moves All moves in the step.
+//   */
+//  void ApplyAttacks (const GameState& state, const std::vector<Move>& moves);
+//
+//  /**
+//   * Deduct life from attached characters.  This also handles killing
+//   * of those with too many attackers, including pre-life-steal.
+//   * @param state The game state, will be modified.
+//   * @param result The step result object to fill in.
+//   */
+//  void DrawLife (GameState& state, StepResult& result);
+//
+//  /**
+//   * Remove mutual attacks from the attacker arrays.
+//   * @param state The state to look up players.
+//   */
+//  void DefendMutualAttacks (const GameState& state);
+//
+//  /**
+//   * Give drawn life back to attackers.  If there are more attackers than
+//   * available coins, distribute randomly.
+//   * @param rnd The RNG to use.
+//   * @param state The state to update.
+//   */
+//  void DistributeDrawnLife (RandomGenerator& rnd, GameState& state) const;
+//
+//};
 
 // Do not use for user-provided coordinates, as abs can overflow on INT_MIN.
 // Use for algorithmically-computed coordinates that guaranteedly lie within the game map.
@@ -255,89 +255,89 @@ inline int distLInf(const Coord &c1, const Coord &c2)
     return std::max(abs(c1.x - c2.x), abs(c1.y - c2.y));
 }
 
-struct LootInfo
-{
-    int64_t nAmount;
-    // Time span over the which this loot accumulated
-    // This is merely for informative purposes, plus to make
-    // hash of the loot tx unique
-    int firstBlock, lastBlock;
-
-    LootInfo() : nAmount(0), firstBlock(-1), lastBlock(-1) { }
-    LootInfo(int64_t nAmount_, int nHeight) : nAmount(nAmount_), firstBlock(nHeight), lastBlock(nHeight) { }
-
-    IMPLEMENT_SERIALIZE
-    (
-        READWRITE(nAmount);
-        READWRITE(firstBlock);
-        READWRITE(lastBlock);
-    )
-};
-
-struct CollectedLootInfo : public LootInfo
-{
-    /* Time span over which the loot was collected.  If this is a
-       player refund bounty, collectedFirstBlock = -1 and collectedLastBlock
-       is set to the refunding block height.  */
-    int collectedFirstBlock, collectedLastBlock;
-    
-    CollectedLootInfo() : LootInfo(), collectedFirstBlock(-1), collectedLastBlock(-1) { }
-
-    void Collect(const LootInfo &loot, int nHeight)
-    {
-        assert (!IsRefund ());
-
-        if (loot.nAmount <= 0)
-            return;
-
-        nAmount += loot.nAmount;
-
-        if (firstBlock < 0 || loot.firstBlock < firstBlock)
-            firstBlock = loot.firstBlock;
-        if (loot.lastBlock > lastBlock)
-            lastBlock = loot.lastBlock;
-
-        if (collectedFirstBlock < 0)
-            collectedFirstBlock = nHeight;
-        collectedLastBlock = nHeight;
-    }
-
-    /* Set the loot info to a state that means "this is a player refunding tx".
-       They are used to give back coins if a player is killed for staying in
-       the spawn area, and encoded differently in the game transactions.
-       The block height is present to make the resulting tx unique.  */
-    inline void
-    SetRefund (int64_t refundAmount, int nHeight)
-    {
-      assert (nAmount == 0);
-      assert (collectedFirstBlock == -1 && collectedLastBlock == -1);
-      nAmount = refundAmount;
-      collectedLastBlock = nHeight;
-    }
-
-    /* Check if this is a player refund tx.  */
-    inline bool
-    IsRefund () const
-    {
-      return (nAmount > 0 && collectedFirstBlock == -1);
-    }
-
-    /* When this is a refund, return the refund block height.  */
-    inline int
-    GetRefundHeight () const
-    {
-      assert (IsRefund ());
-      return collectedLastBlock;
-    }
-
-    IMPLEMENT_SERIALIZE
-    (
-        READWRITE(*(LootInfo*)this);
-        READWRITE(collectedFirstBlock);
-        READWRITE(collectedLastBlock);
-        assert (!IsRefund ());
-    )
-};
+//struct LootInfo
+//{
+//    int64_t nAmount;
+//    // Time span over the which this loot accumulated
+//    // This is merely for informative purposes, plus to make
+//    // hash of the loot tx unique
+//    int firstBlock, lastBlock;
+//
+//    LootInfo() : nAmount(0), firstBlock(-1), lastBlock(-1) { }
+//    LootInfo(int64_t nAmount_, int nHeight) : nAmount(nAmount_), firstBlock(nHeight), lastBlock(nHeight) { }
+//
+//    IMPLEMENT_SERIALIZE
+//    (
+//        READWRITE(nAmount);
+//        READWRITE(firstBlock);
+//        READWRITE(lastBlock);
+//    )
+//};
+//
+//struct CollectedLootInfo : public LootInfo
+//{
+//    /* Time span over which the loot was collected.  If this is a
+//       player refund bounty, collectedFirstBlock = -1 and collectedLastBlock
+//       is set to the refunding block height.  */
+//    int collectedFirstBlock, collectedLastBlock;
+//    
+//    CollectedLootInfo() : LootInfo(), collectedFirstBlock(-1), collectedLastBlock(-1) { }
+//
+//    void Collect(const LootInfo &loot, int nHeight)
+//    {
+//        assert (!IsRefund ());
+//
+//        if (loot.nAmount <= 0)
+//            return;
+//
+//        nAmount += loot.nAmount;
+//
+//        if (firstBlock < 0 || loot.firstBlock < firstBlock)
+//            firstBlock = loot.firstBlock;
+//        if (loot.lastBlock > lastBlock)
+//            lastBlock = loot.lastBlock;
+//
+//        if (collectedFirstBlock < 0)
+//            collectedFirstBlock = nHeight;
+//        collectedLastBlock = nHeight;
+//    }
+//
+//    /* Set the loot info to a state that means "this is a player refunding tx".
+//       They are used to give back coins if a player is killed for staying in
+//       the spawn area, and encoded differently in the game transactions.
+//       The block height is present to make the resulting tx unique.  */
+//    inline void
+//    SetRefund (int64_t refundAmount, int nHeight)
+//    {
+//      assert (nAmount == 0);
+//      assert (collectedFirstBlock == -1 && collectedLastBlock == -1);
+//      nAmount = refundAmount;
+//      collectedLastBlock = nHeight;
+//    }
+//
+//    /* Check if this is a player refund tx.  */
+//    inline bool
+//    IsRefund () const
+//    {
+//      return (nAmount > 0 && collectedFirstBlock == -1);
+//    }
+//
+//    /* When this is a refund, return the refund block height.  */
+//    inline int
+//    GetRefundHeight () const
+//    {
+//      assert (IsRefund ());
+//      return collectedLastBlock;
+//    }
+//
+//    IMPLEMENT_SERIALIZE
+//    (
+//        READWRITE(*(LootInfo*)this);
+//        READWRITE(collectedFirstBlock);
+//        READWRITE(collectedLastBlock);
+//        assert (!IsRefund ());
+//    )
+//};
 
 struct CharacterState
 {
@@ -345,7 +345,7 @@ struct CharacterState
     unsigned char dir;                  // Direction of last move (for nice sprite orientation). Encoding: as on numeric keypad.
     Coord from;                         // Straight-line pathfinding for current waypoint
     WaypointVector waypoints;           // Waypoints (stored in reverse so removal of the first waypoint is fast)
-    CollectedLootInfo loot;             // Loot collected by player but not banked yet
+    //CollectedLootInfo loot;             // Loot collected by player but not banked yet
     unsigned char stay_in_spawn_area;   // Auto-kill players who stay in the spawn area too long
 
     CharacterState ()
@@ -363,7 +363,7 @@ struct CharacterState
         READWRITE(dir);
         READWRITE(from);
         READWRITE(waypoints);
-        READWRITE(loot);
+        //READWRITE(loot);
         READWRITE(stay_in_spawn_area);
     )
 
@@ -386,10 +386,10 @@ struct CharacterState
      */
     unsigned TimeToDestination(const WaypointVector *altWP = NULL) const;
 
-    /* Collect loot by this character.  This takes the carrying capacity
-       into account and only collects until this limit is reached.  All
-       loot amount that *remains* will be returned.  */
-    int64_t CollectLoot (LootInfo newLoot, int nHeight, int64_t carryCap);
+    ///* Collect loot by this character.  This takes the carrying capacity
+    //   into account and only collects until this limit is reached.  All
+    //   loot amount that *remains* will be returned.  */
+    //int64_t CollectLoot (LootInfo newLoot, int nHeight, int64_t carryCap);
 
     json_spirit::Value ToJsonValue(bool has_crown) const;
 };
@@ -472,7 +472,9 @@ struct GameState
     // When converting to JSON, this array is concatenated with normal players.
     std::map<PlayerID, PlayerState> dead_players_chat;
 
-    std::map<Coord, LootInfo> loot;
+	std::map<Coord, PlayerID> property_possession;
+
+    //std::map<Coord, LootInfo> loot;
     std::set<Coord> hearts;
 
     /* Store banks together with their remaining life time.  */
@@ -513,7 +515,8 @@ struct GameState
 
       READWRITE(players);
       READWRITE(dead_players_chat);
-      READWRITE(loot);
+	  READWRITE(property_possession);
+      //READWRITE(loot);
       READWRITE(hearts);
       if (nVersion >= 1030000)
         READWRITE(banks);
@@ -539,63 +542,63 @@ struct GameState
 
     json_spirit::Value ToJsonValue() const;
 
-    // Helper functions
-    void AddLoot(Coord coord, int64_t nAmount);
-    void DivideLootAmongPlayers();
-    void CollectHearts(RandomGenerator &rnd);
-    void UpdateCrownState(bool &respawn_crown);
-    void CollectCrown(RandomGenerator &rnd, bool respawn_crown);
-    void CrownBonus(int64_t nAmount);
+    //// Helper functions
+    //void AddLoot(Coord coord, int64_t nAmount);
+    //void DivideLootAmongPlayers();
+    //void CollectHearts(RandomGenerator &rnd);
+    //void UpdateCrownState(bool &respawn_crown);
+    //void CollectCrown(RandomGenerator &rnd, bool respawn_crown);
+    //void CrownBonus(int64_t nAmount);
 
-    /**
-     * Get the number of initial characters for players created in this
-     * game state.  This was initially 3, and is changed in a hardfork
-     * depending on the block height.
-     * @return Number of initial characters to create (including general).
-     */
-    unsigned GetNumInitialCharacters () const;
+    ///**
+    // * Get the number of initial characters for players created in this
+    // * game state.  This was initially 3, and is changed in a hardfork
+    // * depending on the block height.
+    // * @return Number of initial characters to create (including general).
+    // */
+    //unsigned GetNumInitialCharacters () const;
 
-    /**
-     * Check if a given location is a banking spot.
-     * @param c The coordinate to check.
-     * @return True iff it is a banking spot.
-     */
-    bool IsBank (const Coord& c) const;
+    ///**
+    // * Check if a given location is a banking spot.
+    // * @param c The coordinate to check.
+    // * @return True iff it is a banking spot.
+    // */
+    //bool IsBank (const Coord& c) const;
 
-    /* Handle loot of a killed character.  Depending on the circumstances,
-       it may be dropped (with or without miner tax), refunded in a bounty
-       transaction or added to the game fund.  */
-    void HandleKilledLoot (const PlayerID& pId, int chInd,
-                           const KilledByInfo& info, StepResult& step);
+    ///* Handle loot of a killed character.  Depending on the circumstances,
+    //   it may be dropped (with or without miner tax), refunded in a bounty
+    //   transaction or added to the game fund.  */
+    //void HandleKilledLoot (const PlayerID& pId, int chInd,
+    //                       const KilledByInfo& info, StepResult& step);
 
-    /* For a given list of killed players, kill all their characters
-       and collect the tax amount.  The killed players are removed from
-       the state's list of players.  */
-    void FinaliseKills (StepResult& step);
+    ///* For a given list of killed players, kill all their characters
+    //   and collect the tax amount.  The killed players are removed from
+    //   the state's list of players.  */
+    //void FinaliseKills (StepResult& step);
 
-    /* Check if a disaster should happen at the current state given
-       the random numbers.  */
-    bool CheckForDisaster (RandomGenerator& rng) const;
+    ///* Check if a disaster should happen at the current state given
+    //   the random numbers.  */
+    //bool CheckForDisaster (RandomGenerator& rng) const;
 
-    /* Perform spawn deaths.  */
-    void KillSpawnArea (StepResult& step);
+    ///* Perform spawn deaths.  */
+    //void KillSpawnArea (StepResult& step);
 
-    /* Apply poison disaster to the state.  */
-    void ApplyDisaster (RandomGenerator& rng);
-    /* Decrement poison life expectation and kill players whose has
-       dropped to zero.  */
-    void DecrementLife (StepResult& step);
+    ///* Apply poison disaster to the state.  */
+    //void ApplyDisaster (RandomGenerator& rng);
+    ///* Decrement poison life expectation and kill players whose has
+    //   dropped to zero.  */
+    //void DecrementLife (StepResult& step);
 
-    /* Special action at the life-steal fork height:  Remove all hearts
-       on the map and kill all hearted players.  */
-    void RemoveHeartedCharacters (StepResult& step);
+    ///* Special action at the life-steal fork height:  Remove all hearts
+    //   on the map and kill all hearted players.  */
+    //void RemoveHeartedCharacters (StepResult& step);
 
-    /* Update the banks randomly (eventually).  */
-    void UpdateBanks (RandomGenerator& rng);
+    ///* Update the banks randomly (eventually).  */
+    //void UpdateBanks (RandomGenerator& rng);
 
-    /* Return total amount of coins on the map (in loot and hold by players,
-       including also general values).  */
-    int64_t GetCoinsOnMap () const;
+    ///* Return total amount of coins on the map (in loot and hold by players,
+    //   including also general values).  */
+    //int64_t GetCoinsOnMap () const;
 
 };
 
@@ -606,104 +609,104 @@ struct StepData : boost::noncopyable
     std::vector<Move> vMoves;
 };
 
-/* Encode data for a banked bounty.  This includes also the payment address
-   as per the player state (may be empty if no explicit address is set), so
-   that the reward-paying game tx can be constructed even if the player
-   is no longer alive (e. g., killed by a disaster).  */
-struct CollectedBounty
-{
-
-  CharacterID character;
-  CollectedLootInfo loot;
-  std::string address;
-
-  inline CollectedBounty (const PlayerID& p, int cInd,
-                          const CollectedLootInfo& l,
-                          const std::string& addr)
-    : character(p, cInd), loot(l), address(addr)
-  {}
-
-  /* Look up the player in the given game state and if it is still
-     there, update the address from the game state.  */
-  void UpdateAddress (const GameState& state);
-
-};
-
-/* Encode data about why or by whom a player was killed.  Possibilities
-   are a player (also self-destruct), staying too long in spawn area and
-   due to poisoning after a disaster.  The information is used to
-   construct the game transactions.  */
-struct KilledByInfo
-{
-
-  /* Actual reason for death.  Since this is also used for ordering of
-     the killed-by infos, the order here is crucial and determines
-     how the killed-by info will be represented in the constructed game tx.  */
-  enum Reason
-  {
-    KILLED_DESTRUCT = 1, /* Killed by destruct / some player.  */
-    KILLED_SPAWN,        /* Staying too long in spawn area.  */
-    KILLED_POISON        /* Killed by poisoning.  */
-  } reason;
-
-  /* The killing character, if killed by destruct.  */
-  CharacterID killer;
-
-  inline KilledByInfo (Reason why)
-    : reason(why)
-  {
-    assert (why != KILLED_DESTRUCT);
-  }
-
-  inline KilledByInfo (const CharacterID& ch)
-    : reason(KILLED_DESTRUCT), killer(ch)
-  {}
-
-  /* See if this killing reason pays out miner tax or not.  */
-  bool HasDeathTax () const;
-
-  /* See if this killing should drop the coins.  Otherwise (e. g., for poison)
-     the coins are added to the game fund.  */
-  bool DropCoins (unsigned nHeight, const PlayerState& victim) const;
-
-  /* See if this killing allows a refund of the general cost to the player.
-     This depends on the height, since poison death refunds only after
-     the life-steal fork.  */
-  bool CanRefund (unsigned nHeight, const PlayerState& victim) const;
-
-  /* Comparison necessary for STL containers.  */
-
-  friend inline bool
-  operator== (const KilledByInfo& a, const KilledByInfo& b)
-  {
-    if (a.reason != b.reason)
-      return false;
-
-    switch (a.reason)
-      {
-      case KILLED_DESTRUCT:
-        return a.killer == b.killer;
-      default:
-        return true;
-      }
-  }
-
-  friend inline bool
-  operator< (const KilledByInfo& a, const KilledByInfo& b)
-  {
-    if (a.reason != b.reason)
-      return (a.reason < b.reason);
-
-    switch (a.reason)
-      {
-      case KILLED_DESTRUCT:
-        return a.killer < b.killer;
-      default:
-        return false;
-      }
-  }
-
-};
+///* Encode data for a banked bounty.  This includes also the payment address
+//   as per the player state (may be empty if no explicit address is set), so
+//   that the reward-paying game tx can be constructed even if the player
+//   is no longer alive (e. g., killed by a disaster).  */
+//struct CollectedBounty
+//{
+//
+//  CharacterID character;
+//  CollectedLootInfo loot;
+//  std::string address;
+//
+//  inline CollectedBounty (const PlayerID& p, int cInd,
+//                          const CollectedLootInfo& l,
+//                          const std::string& addr)
+//    : character(p, cInd), loot(l), address(addr)
+//  {}
+//
+//  /* Look up the player in the given game state and if it is still
+//     there, update the address from the game state.  */
+//  void UpdateAddress (const GameState& state);
+//
+//};
+//
+///* Encode data about why or by whom a player was killed.  Possibilities
+//   are a player (also self-destruct), staying too long in spawn area and
+//   due to poisoning after a disaster.  The information is used to
+//   construct the game transactions.  */
+//struct KilledByInfo
+//{
+//
+//  /* Actual reason for death.  Since this is also used for ordering of
+//     the killed-by infos, the order here is crucial and determines
+//     how the killed-by info will be represented in the constructed game tx.  */
+//  enum Reason
+//  {
+//    KILLED_DESTRUCT = 1, /* Killed by destruct / some player.  */
+//    KILLED_SPAWN,        /* Staying too long in spawn area.  */
+//    KILLED_POISON        /* Killed by poisoning.  */
+//  } reason;
+//
+//  /* The killing character, if killed by destruct.  */
+//  CharacterID killer;
+//
+//  inline KilledByInfo (Reason why)
+//    : reason(why)
+//  {
+//    assert (why != KILLED_DESTRUCT);
+//  }
+//
+//  inline KilledByInfo (const CharacterID& ch)
+//    : reason(KILLED_DESTRUCT), killer(ch)
+//  {}
+//
+//  /* See if this killing reason pays out miner tax or not.  */
+//  bool HasDeathTax () const;
+//
+//  /* See if this killing should drop the coins.  Otherwise (e. g., for poison)
+//     the coins are added to the game fund.  */
+//  bool DropCoins (unsigned nHeight, const PlayerState& victim) const;
+//
+//  /* See if this killing allows a refund of the general cost to the player.
+//     This depends on the height, since poison death refunds only after
+//     the life-steal fork.  */
+//  bool CanRefund (unsigned nHeight, const PlayerState& victim) const;
+//
+//  /* Comparison necessary for STL containers.  */
+//
+//  friend inline bool
+//  operator== (const KilledByInfo& a, const KilledByInfo& b)
+//  {
+//    if (a.reason != b.reason)
+//      return false;
+//
+//    switch (a.reason)
+//      {
+//      case KILLED_DESTRUCT:
+//        return a.killer == b.killer;
+//      default:
+//        return true;
+//      }
+//  }
+//
+//  friend inline bool
+//  operator< (const KilledByInfo& a, const KilledByInfo& b)
+//  {
+//    if (a.reason != b.reason)
+//      return (a.reason < b.reason);
+//
+//    switch (a.reason)
+//      {
+//      case KILLED_DESTRUCT:
+//        return a.killer < b.killer;
+//      default:
+//        return false;
+//      }
+//  }
+//
+//};
 
 class StepResult
 {
@@ -712,38 +715,38 @@ private:
 
     // The following arrays only contain killed players
     // (i.e. the main character)
-    PlayerSet killedPlayers;
-    KilledByMap killedBy;
+    //PlayerSet killedPlayers;
+    //KilledByMap killedBy;
 
 public:
 
-    std::vector<CollectedBounty> bounties;
+    //std::vector<CollectedBounty> bounties;
 
     int64_t nTaxAmount;
 
     StepResult() : nTaxAmount(0) { }
 
-    /* Insert information about a killed player.  */
-    inline void
-    KillPlayer (const PlayerID& victim, const KilledByInfo& killer)
-    {
-      killedBy.insert (std::make_pair (victim, killer));
-      killedPlayers.insert (victim);
-    }
+    ///* Insert information about a killed player.  */
+    //inline void
+    //KillPlayer (const PlayerID& victim, const KilledByInfo& killer)
+    //{
+    //  killedBy.insert (std::make_pair (victim, killer));
+    //  killedPlayers.insert (victim);
+    //}
 
-    /* Read-only access to the killed player maps.  */
+    ///* Read-only access to the killed player maps.  */
 
-    inline const PlayerSet&
-    GetKilledPlayers () const
-    {
-      return killedPlayers;
-    }
+    //inline const PlayerSet&
+    //GetKilledPlayers () const
+    //{
+    //  return killedPlayers;
+    //}
 
-    inline const KilledByMap&
-    GetKilledBy () const
-    {
-      return killedBy;
-    }
+    //inline const KilledByMap&
+    //GetKilledBy () const
+    //{
+    //  return killedBy;
+    //}
 
 };
 

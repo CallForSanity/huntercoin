@@ -57,77 +57,77 @@ CreateGameTransactions (CNameDB& nameDb, const GameState& gameState,
   CTransaction txNew;
   txNew.SetGameTx ();
 
-  // Destroy name-coins of killed players
-  const PlayerSet& killedPlayers = stepResult.GetKilledPlayers ();
-  const KilledByMap& killedBy = stepResult.GetKilledBy ();
-  txNew.vin.reserve (killedPlayers.size ());
-  BOOST_FOREACH(const PlayerID &victim, killedPlayers)
-    {
-      const vchType vchName = vchFromString (victim);
-      CTransaction tx;
-      if (!GetTxOfNameAtHeight (nameDb, vchName, gameState.nHeight, tx))
-        return error ("Game engine killed a non-existing player %s",
-                      victim.c_str ());
+  //// Destroy name-coins of killed players
+  //const PlayerSet& killedPlayers = stepResult.GetKilledPlayers ();
+  //const KilledByMap& killedBy = stepResult.GetKilledBy ();
+  //txNew.vin.reserve (killedPlayers.size ());
+  //BOOST_FOREACH(const PlayerID &victim, killedPlayers)
+  //  {
+  //    const vchType vchName = vchFromString (victim);
+  //    CTransaction tx;
+  //    if (!GetTxOfNameAtHeight (nameDb, vchName, gameState.nHeight, tx))
+  //      return error ("Game engine killed a non-existing player %s",
+  //                    victim.c_str ());
 
-      if (fDebug)
-        printf ("  killed: %s\n", victim.c_str ());
+  //    if (fDebug)
+  //      printf ("  killed: %s\n", victim.c_str ());
 
-      CTxIn txin(tx.GetHash (), IndexOfNameOutput (tx));
+  //    CTxIn txin(tx.GetHash (), IndexOfNameOutput (tx));
 
-      /* List all killers, if player was simultaneously killed by several
-         other players.  If the reason was not KILLED_DESTRUCT, handle
-         it also.  If multiple reasons apply, the game tx is constructed
-         for the first reason according to the ordering inside of KilledByMap.
-         (Which in turn is determined by the enum values for KILLED_*.)  */
+  //    /* List all killers, if player was simultaneously killed by several
+  //       other players.  If the reason was not KILLED_DESTRUCT, handle
+  //       it also.  If multiple reasons apply, the game tx is constructed
+  //       for the first reason according to the ordering inside of KilledByMap.
+  //       (Which in turn is determined by the enum values for KILLED_*.)  */
 
-      typedef KilledByMap::const_iterator Iter;
-      const std::pair<Iter, Iter> iters = killedBy.equal_range (victim);
-      if (iters.first == iters.second)
-        return error ("No reason for killed player %s", victim.c_str ());
-      const KilledByInfo::Reason reason = iters.first->second.reason;
+  //    typedef KilledByMap::const_iterator Iter;
+  //    const std::pair<Iter, Iter> iters = killedBy.equal_range (victim);
+  //    if (iters.first == iters.second)
+  //      return error ("No reason for killed player %s", victim.c_str ());
+  //    const KilledByInfo::Reason reason = iters.first->second.reason;
 
-      /* Unless we have destruct, there should be exactly one entry with
-         the "first" reason.  There may be multiple entries for different
-         reasons, for instance, killed by poison and staying in spawn
-         area at the same time.  */
-      {
-        Iter it = iters.first;
-        ++it;
-        if (reason != KilledByInfo::KILLED_DESTRUCT && it != iters.second
-            && reason == it->second.reason)
-          return error ("Multiple same-reason, non-destruct killed-by"
-                        " entries for %s", victim.c_str ());
-      }
+  //    /* Unless we have destruct, there should be exactly one entry with
+  //       the "first" reason.  There may be multiple entries for different
+  //       reasons, for instance, killed by poison and staying in spawn
+  //       area at the same time.  */
+  //    {
+  //      Iter it = iters.first;
+  //      ++it;
+  //      if (reason != KilledByInfo::KILLED_DESTRUCT && it != iters.second
+  //          && reason == it->second.reason)
+  //        return error ("Multiple same-reason, non-destruct killed-by"
+  //                      " entries for %s", victim.c_str ());
+  //    }
 
-      switch (reason)
-        {
-        case KilledByInfo::KILLED_DESTRUCT:
-          txin.scriptSig << vchName << GAMEOP_KILLED_BY;
-          for (Iter it = iters.first; it != iters.second; ++it)
-            {
-              if (it->second.reason != KilledByInfo::KILLED_DESTRUCT)
-                {
-                  assert (it != iters.first);
-                  break;
-                }
-              txin.scriptSig << vchFromString (it->second.killer.ToString ());
-            }
-          break;
+  //    switch (reason)
+  //      {
+  //      case KilledByInfo::KILLED_DESTRUCT:
+  //        txin.scriptSig << vchName << GAMEOP_KILLED_BY;
+  //        for (Iter it = iters.first; it != iters.second; ++it)
+  //          {
+  //            if (it->second.reason != KilledByInfo::KILLED_DESTRUCT)
+  //              {
+  //                assert (it != iters.first);
+  //                break;
+  //              }
+  //            txin.scriptSig << vchFromString (it->second.killer.ToString ());
+  //          }
+  //        break;
 
-        case KilledByInfo::KILLED_SPAWN:
-          txin.scriptSig << vchName << GAMEOP_KILLED_BY;
-          break;
+  //      case KilledByInfo::KILLED_SPAWN:
+  //        txin.scriptSig << vchName << GAMEOP_KILLED_BY;
+  //        break;
 
-        case KilledByInfo::KILLED_POISON:
-          txin.scriptSig << vchName << GAMEOP_KILLED_POISON;
-          break;
+  //      case KilledByInfo::KILLED_POISON:
+  //        txin.scriptSig << vchName << GAMEOP_KILLED_POISON;
+  //        break;
 
-        default:
-          assert (false);
-        }
+  //      default:
+  //        assert (false);
+  //      }
 
-      txNew.vin.push_back (txin);
-    }
+  //    txNew.vin.push_back (txin);
+  //  }
   if (!txNew.IsNull ())
     {
       outvgametx.push_back (txNew);
@@ -135,57 +135,57 @@ CreateGameTransactions (CNameDB& nameDb, const GameState& gameState,
         printf ("Game tx for killed players: %s\n", txNew.GetHashForLog ());
     }
 
-  /* Pay bounties to the players who collected them.  The transaction
-     inputs are just "dummy" containing informational messages.  */
-  txNew.SetNull ();
-  txNew.SetGameTx ();
-  txNew.vin.reserve (stepResult.bounties.size ());
-  txNew.vout.reserve (stepResult.bounties.size ());
+  ///* Pay bounties to the players who collected them.  The transaction
+  //   inputs are just "dummy" containing informational messages.  */
+  //txNew.SetNull ();
+  //txNew.SetGameTx ();
+  //txNew.vin.reserve (stepResult.bounties.size ());
+  //txNew.vout.reserve (stepResult.bounties.size ());
 
-  BOOST_FOREACH(const CollectedBounty& bounty, stepResult.bounties)
-    {
-      const vchType vchName = vchFromString (bounty.character.player);
-      CTransaction tx;
-      if (!GetTxOfNameAtHeight (nameDb, vchName, gameState.nHeight, tx))
-        return error ("Game engine created bounty for non-existing player");
+  //BOOST_FOREACH(const CollectedBounty& bounty, stepResult.bounties)
+  //  {
+  //    const vchType vchName = vchFromString (bounty.character.player);
+  //    CTransaction tx;
+  //    if (!GetTxOfNameAtHeight (nameDb, vchName, gameState.nHeight, tx))
+  //      return error ("Game engine created bounty for non-existing player");
 
-      CTxOut txout;
-      txout.nValue = bounty.loot.nAmount;
+  //    CTxOut txout;
+  //    txout.nValue = bounty.loot.nAmount;
 
-      if (!bounty.address.empty ())
-        {
-          /* Player-provided addresses are validated before accepting them,
-             so failing here is ok.  */
-          if (!txout.scriptPubKey.SetBitcoinAddress (bounty.address))
-            return error ("Failed to set player-provided address for bounty");
-        }
-      else
-        {
-          // TODO: Maybe pay to the script of the name-tx without extracting the address first
-          // (see source of GetNameAddress - it obtains the script by calling RemoveNameScriptPrefix)
-          uint160 addr;
-          if (!GetNameAddress (tx, addr))
-            return error("Cannot get name address for bounty");
-          txout.scriptPubKey.SetBitcoinAddress (addr);
-        }
+  //    if (!bounty.address.empty ())
+  //      {
+  //        /* Player-provided addresses are validated before accepting them,
+  //           so failing here is ok.  */
+  //        if (!txout.scriptPubKey.SetBitcoinAddress (bounty.address))
+  //          return error ("Failed to set player-provided address for bounty");
+  //      }
+  //    else
+  //      {
+  //        // TODO: Maybe pay to the script of the name-tx without extracting the address first
+  //        // (see source of GetNameAddress - it obtains the script by calling RemoveNameScriptPrefix)
+  //        uint160 addr;
+  //        if (!GetNameAddress (tx, addr))
+  //          return error("Cannot get name address for bounty");
+  //        txout.scriptPubKey.SetBitcoinAddress (addr);
+  //      }
 
-      txNew.vout.push_back (txout);
+  //    txNew.vout.push_back (txout);
 
-      CTxIn txin;
-      if (bounty.loot.IsRefund ())
-        txin.scriptSig
-          << vchName << GAMEOP_REFUND
-          << bounty.character.index << bounty.loot.GetRefundHeight ();
-      else
-        txin.scriptSig
-          << vchName << GAMEOP_COLLECTED_BOUNTY
-          << bounty.character.index
-          << bounty.loot.firstBlock
-          << bounty.loot.lastBlock
-          << bounty.loot.collectedFirstBlock
-          << bounty.loot.collectedLastBlock;
-      txNew.vin.push_back (txin);
-    }
+  //    CTxIn txin;
+  //    if (bounty.loot.IsRefund ())
+  //      txin.scriptSig
+  //        << vchName << GAMEOP_REFUND
+  //        << bounty.character.index << bounty.loot.GetRefundHeight ();
+  //    else
+  //      txin.scriptSig
+  //        << vchName << GAMEOP_COLLECTED_BOUNTY
+  //        << bounty.character.index
+  //        << bounty.loot.firstBlock
+  //        << bounty.loot.lastBlock
+  //        << bounty.loot.collectedFirstBlock
+  //        << bounty.loot.collectedLastBlock;
+  //    txNew.vin.push_back (txin);
+  //  }
   if (!txNew.IsNull ())
     {
       outvgametx.push_back (txNew);
@@ -196,28 +196,28 @@ CreateGameTransactions (CNameDB& nameDb, const GameState& gameState,
   return true;
 }
 
-bool
-IsPlayerDeathInput (const CTxIn& in, vchType& name)
-{
-  opcodetype opcode;
-  CScript::const_iterator pc = in.scriptSig.begin ();
-
-  if (!in.scriptSig.GetOp (pc, opcode, name))
-    return error ("could not extract name in game tx input");
-
-  if (!in.scriptSig.GetOp (pc, opcode))
-    return error ("could not extract game tx opcode");
-
-  switch (opcode - OP_1 + 1)
-    {
-    case GAMEOP_KILLED_BY:
-    case GAMEOP_KILLED_POISON:
-      return true;
-
-    default:
-      return false;
-    }
-}
+//bool
+//IsPlayerDeathInput (const CTxIn& in, vchType& name)
+//{
+//  opcodetype opcode;
+//  CScript::const_iterator pc = in.scriptSig.begin ();
+//
+//  if (!in.scriptSig.GetOp (pc, opcode, name))
+//    return error ("could not extract name in game tx input");
+//
+//  if (!in.scriptSig.GetOp (pc, opcode))
+//    return error ("could not extract game tx opcode");
+//
+//  switch (opcode - OP_1 + 1)
+//    {
+//    case GAMEOP_KILLED_BY:
+//    case GAMEOP_KILLED_POISON:
+//      return true;
+//
+//    default:
+//      return false;
+//    }
+//}
 
 /* Decode an integer (not could be encoded as OP_x or a bignum)
    from the script.  Returns -1 in case of error.  */

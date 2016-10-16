@@ -109,9 +109,9 @@ public:
                 }
 
                 case Coins:
-                    mi2 = state.characters.find(i);
-                    if (mi2 != state.characters.end())
-                        return QString::fromStdString(FormatMoney(mi2->second.loot.nAmount));    // TODO: for sorting return as float value
+                    //mi2 = state.characters.find(i);
+                    //if (mi2 != state.characters.end())
+                    //    return QString::fromStdString(FormatMoney(mi2->second.loot.nAmount));    // TODO: for sorting return as float value
                     return QVariant();
 
                 case Status:
@@ -142,8 +142,8 @@ public:
                     const Game::WaypointVector* wp = NULL;
                     if (mi != queuedMoves.end())
                         wp = &mi->second.waypoints;
-                    if (mi2 != state.characters.end())
-                        val = mi2->second.TimeToDestination(wp);
+                    //if (mi2 != state.characters.end())
+                    //    val = mi2->second.TimeToDestination(wp);
                     if (val > 0)
                         return QString("%1").arg(val);
                     return "";

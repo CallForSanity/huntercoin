@@ -298,25 +298,25 @@ NameTablePriv::listNames (std::map<vchType, NameTableEntry>& names,
 
           /* Process game transactions to fill in the killedAt array.  Ignore
              unconfirmed ones, since they belong to orphaned blocks.  */
-          if (tx.IsGameTx ())
-            {
-              if (fConfirmed)
-                BOOST_FOREACH(const CTxIn& txi, tx.vin)
-                  if (IsPlayerDeathInput (txi, vchName))
-                    {
-                      if (nameFilter && vchName != *nameFilter)
-                        continue;
+          //if (tx.IsGameTx ())
+          //  {
+          //    if (fConfirmed)
+          //      BOOST_FOREACH(const CTxIn& txi, tx.vin)
+          //        if (IsPlayerDeathInput (txi, vchName))
+          //          {
+          //            if (nameFilter && vchName != *nameFilter)
+          //              continue;
 
-                      std::map<vchType, int>::iterator pos;
-                      pos = killedAt.find (vchName);
-                      if (pos == killedAt.end ())
-                        killedAt.insert (std::make_pair (vchName, nHeight));
-                      else if (pos->second < nHeight)
-                        pos->second = nHeight;
-                    }
+          //            std::map<vchType, int>::iterator pos;
+          //            pos = killedAt.find (vchName);
+          //            if (pos == killedAt.end ())
+          //              killedAt.insert (std::make_pair (vchName, nHeight));
+          //            else if (pos->second < nHeight)
+          //              pos->second = nHeight;
+          //          }
 
-              continue;
-            }
+          //    continue;
+          //  }
 
           vchType vchValue;
           int nOut;

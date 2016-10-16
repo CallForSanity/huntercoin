@@ -28,7 +28,7 @@ bool CreateGameTransactions (CNameDB& pnameDb, const Game::GameState& gameState,
 
 /* See if a given tx input is a player death in a game tx.  If this is the case,
    the killed player's name is returned.  */
-bool IsPlayerDeathInput (const CTxIn& in, std::vector<unsigned char>& name);
+//bool IsPlayerDeathInput (const CTxIn& in, std::vector<unsigned char>& name);
 
 // Format human-readable description of a single input of game tx.
 // Note: the caller must know the structure of game transactions, to correctly match txin and txout

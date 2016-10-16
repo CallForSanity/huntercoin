@@ -137,58 +137,58 @@ public:
                           sName.c_str ());
         dup.insert(sName);
 
-        Move m;
-        m.newLocked = tx.vout[nOut].nValue;
+        //Move m;
+        //m.newLocked = tx.vout[nOut].nValue;
 
-        m.Parse(sName, sValue);
-        if (!m)
-            return error("GameStepValidator: cannot parse move %s for player %s", sValue.c_str(), sName.c_str());
-        if (!m.IsValid(*pstate))
-            return error("GameStepValidator: invalid move for the game state: move %s for player %s", sValue.c_str(), sName.c_str());
+        //m.Parse(sName, sValue);
+        //if (!m)
+        //    return error("GameStepValidator: cannot parse move %s for player %s", sValue.c_str(), sName.c_str());
+        //if (!m.IsValid(*pstate))
+        //    return error("GameStepValidator: invalid move for the game state: move %s for player %s", sValue.c_str(), sName.c_str());
 
-        if (m.IsSpawn ())
-          {
-            if (op != OP_NAME_FIRSTUPDATE)
-              return error ("GameStepValidator: spawn is not firstupdate");
-          }
-        else if (op != OP_NAME_UPDATE)
-          return error ("GameStepValidator: name_firstupdate is not spawn");
+        //if (m.IsSpawn ())
+        //  {
+        //    if (op != OP_NAME_FIRSTUPDATE)
+        //      return error ("GameStepValidator: spawn is not firstupdate");
+        //  }
+        //else if (op != OP_NAME_UPDATE)
+        //  return error ("GameStepValidator: name_firstupdate is not spawn");
 
-        std::string addressLock = m.AddressOperationPermission(*pstate);
-        if (!addressLock.empty())
-        {
-            // If one of inputs has address equal to addressLock, then that input has been signed by the address owner
-            // and thus authorizes the address change operation
-            bool found = false;
-            if (!pdbset)
-            {
-                pdbset = new DatabaseSet("r");
-                fOwnDb = true;
-            }
-            for (int i = 0; i < tx.vin.size(); i++)
-            {
-                COutPoint prevout = tx.vin[i].prevout;
-                CTransaction txPrev;
-                CTxIndex txindex;
-                if (!pdbset->tx ().ReadTxIndex (prevout.hash, txindex)
-                    || txindex.pos == CDiskTxPos(1,1,1))
-                    continue;
-                else if (!txPrev.ReadFromDisk(txindex.pos))
-                    continue;
-                if (prevout.n >= txPrev.vout.size())
-                    continue;
-                const CTxOut &vout = txPrev.vout[prevout.n];
-                std::string address;
-                if (ExtractDestination(vout.scriptPubKey, address) && address == addressLock)
-                {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-                return error("GameStepValidator: address operation permission denied: move %s for player %s", sValue.c_str(), sName.c_str());
-        }
-        outMove = m;
+        //std::string addressLock = m.AddressOperationPermission(*pstate);
+        //if (!addressLock.empty())
+        //{
+        //    // If one of inputs has address equal to addressLock, then that input has been signed by the address owner
+        //    // and thus authorizes the address change operation
+        //    bool found = false;
+        //    if (!pdbset)
+        //    {
+        //        pdbset = new DatabaseSet("r");
+        //        fOwnDb = true;
+        //    }
+        //    for (int i = 0; i < tx.vin.size(); i++)
+        //    {
+        //        COutPoint prevout = tx.vin[i].prevout;
+        //        CTransaction txPrev;
+        //        CTxIndex txindex;
+        //        if (!pdbset->tx ().ReadTxIndex (prevout.hash, txindex)
+        //            || txindex.pos == CDiskTxPos(1,1,1))
+        //            continue;
+        //        else if (!txPrev.ReadFromDisk(txindex.pos))
+        //            continue;
+        //        if (prevout.n >= txPrev.vout.size())
+        //            continue;
+        //        const CTxOut &vout = txPrev.vout[prevout.n];
+        //        std::string address;
+        //        if (ExtractDestination(vout.scriptPubKey, address) && address == addressLock)
+        //        {
+        //            found = true;
+        //            break;
+        //        }
+        //    }
+        //    if (!found)
+        //        return error("GameStepValidator: address operation permission denied: move %s for player %s", sValue.c_str(), sName.c_str());
+        //}
+        //outMove = m;
         return true;
     }
 
