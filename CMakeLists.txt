@@ -129,3 +129,8 @@ QT4_ADD_RESOURCES(rcout "src/qt/bitcoin.qrc" "src/qt/gamemap.qrc")
 FILE(GLOB_RECURSE src "src/*.cpp" "src/*.h")
 ADD_EXECUTABLE(owngamecoin ${src} ${mocout} ${uiout} ${rcout} ${mocout_inc} "${CMAKE_CURRENT_SOURCE_DIR}/src/qt/res/bitcoin-qt.rc")
 TARGET_LINK_LIBRARIES(owngamecoin Shlwapi.lib ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${BERKELYDB_LIBRARIES} ${QRENCODE_LIBRARY} ${QT_LIBRARIES})
+
+# specify source groups
+SOURCE_GROUP(cryptopp REGULAR_EXPRESSION ".*/cryptopp/.*")
+SOURCE_GROUP(json REGULAR_EXPRESSION ".*/json/.*")
+SOURCE_GROUP(qt REGULAR_EXPRESSION ".*/qt/.*")
