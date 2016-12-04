@@ -219,6 +219,21 @@ CreateGameTransactions (CNameDB& nameDb, const GameState& gameState,
 //    }
 //}
 
+bool
+DecodeNameFromTransaction(const CTxIn& in, vchType& name)
+{
+	opcodetype opcode;
+	CScript::const_iterator pc = in.scriptSig.begin();
+
+	if (!in.scriptSig.GetOp(pc, opcode, name))
+		return error("could not extract name in game tx input");
+
+	if (!in.scriptSig.GetOp(pc, opcode))
+		return error("could not extract game tx opcode");
+
+	return true;
+}
+
 /* Decode an integer (not could be encoded as OP_x or a bignum)
    from the script.  Returns -1 in case of error.  */
 static int

@@ -54,24 +54,24 @@ inline bool IsWalkable(const Coord &c)
  */
 static std::vector<Coord> walkableTiles;
 
-/* Calculate carrying capacity.  This is where it is basically defined.
-   It depends on the block height (taking forks changing it into account)
-   and possibly properties of the player.  Returns -1 if the capacity
-   is unlimited.  */
-static int64_t
-GetCarryingCapacity (int nHeight, bool isGeneral, bool isCrownHolder)
-{
-  if (!ForkInEffect (FORK_CARRYINGCAP, nHeight) || isCrownHolder)
-    return -1;
-
-  if (ForkInEffect (FORK_LIFESTEAL, nHeight))
-    return 100 * COIN;
-
-  if (ForkInEffect (FORK_LESSHEARTS, nHeight))
-    return 2000 * COIN;
-
-  return (isGeneral ? 50 : 25) * COIN;
-}
+///* Calculate carrying capacity.  This is where it is basically defined.
+//   It depends on the block height (taking forks changing it into account)
+//   and possibly properties of the player.  Returns -1 if the capacity
+//   is unlimited.  */
+//static int64_t
+//GetCarryingCapacity (int nHeight, bool isGeneral, bool isCrownHolder)
+//{
+//  if (!ForkInEffect (FORK_CARRYINGCAP, nHeight) || isCrownHolder)
+//    return -1;
+//
+//  if (ForkInEffect (FORK_LIFESTEAL, nHeight))
+//    return 100 * COIN;
+//
+//  if (ForkInEffect (FORK_LESSHEARTS, nHeight))
+//    return 2000 * COIN;
+//
+//  return (isGeneral ? 50 : 25) * COIN;
+//}
 
 /* Return the minimum necessary amount of locked coins.  This replaces the
    old NAME_COIN_AMOUNT constant and makes it more dynamic, so that we can
@@ -79,68 +79,68 @@ GetCarryingCapacity (int nHeight, bool isGeneral, bool isCrownHolder)
 static int64_t
 GetNameCoinAmount (unsigned nHeight)
 {
-  if (ForkInEffect (FORK_LESSHEARTS, nHeight))
-    return 200 * COIN;
-  if (ForkInEffect (FORK_POISON, nHeight))
-    return 10 * COIN;
+  //if (ForkInEffect (FORK_LESSHEARTS, nHeight))
+  //  return 200 * COIN;
+  //if (ForkInEffect (FORK_POISON, nHeight))
+  //  return 10 * COIN;
   return COIN;
 }
 
-/* Get the destruct radius a hunter has at a certain block height.  This
-   may depend on whether or not it is a general.  */
-static int
-GetDestructRadius (int nHeight, bool isGeneral)
-{
-  if (ForkInEffect (FORK_LESSHEARTS, nHeight))
-    return 1;
-
-  return isGeneral ? 2 : 1;
-}
-
-/* Get maximum allowed stay on a bank.  */
-static int
-MaxStayOnBank (int nHeight)
-{
-  if (ForkInEffect (FORK_LIFESTEAL, nHeight))
-    return 2;
-
-  /* Between those two forks, spawn death was disabled.  */
-  if (ForkInEffect (FORK_CARRYINGCAP, nHeight)
-        && !ForkInEffect (FORK_LESSHEARTS, nHeight))
-    return -1;
-
-  /* Return original value.  */
-  return 30;
-}
-
-/* Check whether or not a heart should be dropped at the current height.  */
-static bool
-DropHeart (int nHeight)
-{
-  if (ForkInEffect (FORK_LIFESTEAL, nHeight))
-    return false;
-
-  const int heartEvery = (ForkInEffect (FORK_LESSHEARTS, nHeight) ? 500 : 10);
-  return nHeight % heartEvery == 0;
-} 
-
-/* Ensure that walkableTiles is filled.  */
-static void
-FillWalkableTiles ()
-{
-  if (!walkableTiles.empty ())
-    return;
-
-  for (int x = 0; x < MAP_WIDTH; ++x)
-    for (int y = 0; y < MAP_HEIGHT; ++y)
-      if (IsWalkable (x, y))
-        walkableTiles.push_back (Coord (x, y));
-
-  /* Do not forget to sort in the order defined by operator<!  */
-  std::sort (walkableTiles.begin (), walkableTiles.end ());
-
-  assert (!walkableTiles.empty ());
-}
+///* Get the destruct radius a hunter has at a certain block height.  This
+//   may depend on whether or not it is a general.  */
+//static int
+//GetDestructRadius (int nHeight, bool isGeneral)
+//{
+//  if (ForkInEffect (FORK_LESSHEARTS, nHeight))
+//    return 1;
+//
+//  return isGeneral ? 2 : 1;
+//}
+//
+///* Get maximum allowed stay on a bank.  */
+//static int
+//MaxStayOnBank (int nHeight)
+//{
+//  if (ForkInEffect (FORK_LIFESTEAL, nHeight))
+//    return 2;
+//
+//  /* Between those two forks, spawn death was disabled.  */
+//  if (ForkInEffect (FORK_CARRYINGCAP, nHeight)
+//        && !ForkInEffect (FORK_LESSHEARTS, nHeight))
+//    return -1;
+//
+//  /* Return original value.  */
+//  return 30;
+//}
+//
+///* Check whether or not a heart should be dropped at the current height.  */
+//static bool
+//DropHeart (int nHeight)
+//{
+//  if (ForkInEffect (FORK_LIFESTEAL, nHeight))
+//    return false;
+//
+//  const int heartEvery = (ForkInEffect (FORK_LESSHEARTS, nHeight) ? 500 : 10);
+//  return nHeight % heartEvery == 0;
+//} 
+//
+///* Ensure that walkableTiles is filled.  */
+//static void
+//FillWalkableTiles ()
+//{
+//  if (!walkableTiles.empty ())
+//    return;
+//
+//  for (int x = 0; x < MAP_WIDTH; ++x)
+//    for (int y = 0; y < MAP_HEIGHT; ++y)
+//      if (IsWalkable (x, y))
+//        walkableTiles.push_back (Coord (x, y));
+//
+//  /* Do not forget to sort in the order defined by operator<!  */
+//  std::sort (walkableTiles.begin (), walkableTiles.end ());
+//
+//  assert (!walkableTiles.empty ());
+//}
 
 } // namespace Game
 
@@ -832,70 +832,70 @@ std::string CharacterID::ToString() const
 void
 CharacterState::Spawn (unsigned nHeight, int color, RandomGenerator &rnd)
 {
-  /* Pick a random walkable spawn location after the life-steal fork.  */
-  if (ForkInEffect (FORK_LIFESTEAL, nHeight))
-    {
-      FillWalkableTiles ();
+  ///* Pick a random walkable spawn location after the life-steal fork.  */
+  //if (ForkInEffect (FORK_LIFESTEAL, nHeight))
+  //  {
+  //    FillWalkableTiles ();
 
-      const int pos = rnd.GetIntRnd (walkableTiles.size ());
-      coord = walkableTiles[pos];
+  //    const int pos = rnd.GetIntRnd (walkableTiles.size ());
+  //    coord = walkableTiles[pos];
 
-      dir = rnd.GetIntRnd (1, 8);
-      if (dir >= 5)
-        ++dir;
-      assert (dir >= 1 && dir <= 9 && dir != 5);
-    }
+  //    dir = rnd.GetIntRnd (1, 8);
+  //    if (dir >= 5)
+  //      ++dir;
+  //    assert (dir >= 1 && dir <= 9 && dir != 5);
+  //  }
 
-  /* Use old logic with fixed spawns in the corners before the fork.  */
-  else
-    {
-      const int pos = rnd.GetIntRnd(2 * SPAWN_AREA_LENGTH - 1);
-      const int x = pos < SPAWN_AREA_LENGTH ? pos : 0;
-      const int y = pos < SPAWN_AREA_LENGTH ? 0 : pos - SPAWN_AREA_LENGTH;
-      switch (color)
-        {
-        case 0: // Yellow (top-left)
-          coord = Coord(x, y);
-          break;
-        case 1: // Red (top-right)
-          coord = Coord(MAP_WIDTH - 1 - x, y);
-          break;
-        case 2: // Green (bottom-right)
-          coord = Coord(MAP_WIDTH - 1 - x, MAP_HEIGHT - 1 - y);
-          break;
-        case 3: // Blue (bottom-left)
-          coord = Coord(x, MAP_HEIGHT - 1 - y);
-          break;
-        default:
-          throw std::runtime_error("CharacterState::Spawn: incorrect color");
-        }
+  ///* Use old logic with fixed spawns in the corners before the fork.  */
+  //else
+  //  {
+  //    const int pos = rnd.GetIntRnd(2 * SPAWN_AREA_LENGTH - 1);
+  //    const int x = pos < SPAWN_AREA_LENGTH ? pos : 0;
+  //    const int y = pos < SPAWN_AREA_LENGTH ? 0 : pos - SPAWN_AREA_LENGTH;
+  //    switch (color)
+  //      {
+  //      case 0: // Yellow (top-left)
+  //        coord = Coord(x, y);
+  //        break;
+  //      case 1: // Red (top-right)
+  //        coord = Coord(MAP_WIDTH - 1 - x, y);
+  //        break;
+  //      case 2: // Green (bottom-right)
+  //        coord = Coord(MAP_WIDTH - 1 - x, MAP_HEIGHT - 1 - y);
+  //        break;
+  //      case 3: // Blue (bottom-left)
+  //        coord = Coord(x, MAP_HEIGHT - 1 - y);
+  //        break;
+  //      default:
+  //        throw std::runtime_error("CharacterState::Spawn: incorrect color");
+  //      }
 
-      // Set look-direction for the sprite
-      if (coord.x == 0)
-        {
-          if (coord.y == 0)
-            dir = 3;
-          else if (coord.y == MAP_HEIGHT - 1)
-            dir = 9;
-          else
-            dir = 6;
-        }
-      else if (coord.x == MAP_WIDTH - 1)
-        {
-          if (coord.y == 0)
-            dir = 1;
-          else if (coord.y == MAP_HEIGHT - 1)
-            dir = 7;
-          else
-            dir = 4;
-        }
-      else if (coord.y == 0)
-        dir = 2;
-      else if (coord.y == MAP_HEIGHT - 1)
-        dir = 8;
-    }
+  //    // Set look-direction for the sprite
+  //    if (coord.x == 0)
+  //      {
+  //        if (coord.y == 0)
+  //          dir = 3;
+  //        else if (coord.y == MAP_HEIGHT - 1)
+  //          dir = 9;
+  //        else
+  //          dir = 6;
+  //      }
+  //    else if (coord.x == MAP_WIDTH - 1)
+  //      {
+  //        if (coord.y == 0)
+  //          dir = 1;
+  //        else if (coord.y == MAP_HEIGHT - 1)
+  //          dir = 7;
+  //        else
+  //          dir = 4;
+  //      }
+  //    else if (coord.y == 0)
+  //      dir = 2;
+  //    else if (coord.y == MAP_HEIGHT - 1)
+  //      dir = 8;
+  //  }
 
-  StopMoving();
+  //StopMoving();
 }
 
 // Returns direction from c1 to c2 as a number from 1 to 9 (as on the numeric keypad)

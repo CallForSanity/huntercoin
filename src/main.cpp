@@ -86,23 +86,25 @@ CHooks* hooks;
 bool
 ForkInEffect (Fork type, unsigned nHeight)
 {
-  switch (type)
-    {
-    case FORK_POISON:
-      return nHeight >= (fTestNet ? 190000 : 255000);
+  //switch (type)
+  //  {
+  //  case FORK_POISON:
+  //    return nHeight >= (fTestNet ? 190000 : 255000);
 
-    case FORK_CARRYINGCAP:
-      return nHeight >= (fTestNet ? 200000 : 500000);
+  //  case FORK_CARRYINGCAP:
+  //    return nHeight >= (fTestNet ? 200000 : 500000);
 
-    case FORK_LESSHEARTS:
-      return nHeight >= (fTestNet ? 240000 : 590000);
+  //  case FORK_LESSHEARTS:
+  //    return nHeight >= (fTestNet ? 240000 : 590000);
 
-    case FORK_LIFESTEAL:
-      return nHeight >= (fTestNet ? 301000 : 795000);
+  //  case FORK_LIFESTEAL:
+  //    return nHeight >= (fTestNet ? 301000 : 795000);
 
-    default:
-      assert (false);
-    }
+  //  default:
+  //    assert (false);
+  //  }
+
+	return false;
 }
 
 bool

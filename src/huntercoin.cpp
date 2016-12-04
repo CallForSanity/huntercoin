@@ -607,7 +607,7 @@ Value name_list(const Array& params, bool fHelp)
     /* Game transactions are not ordinarily processed, but we keep track
        of the latest height at which a name is killed.  This is used
        to set those names' "dead" flag in the end.  */
-    std::map<vchType, int> killedAt;
+    //std::map<vchType, int> killedAt;
 
     CRITICAL_BLOCK(cs_main)
     CRITICAL_BLOCK(pwalletMain->cs_mapWallet)
@@ -670,22 +670,22 @@ Value name_list(const Array& params, bool fHelp)
           }
       }
 
-    BOOST_FOREACH(const PAIRTYPE(vchType, Object)& item, vNamesO)
-      {
-        Object obj = item.second;
+    //BOOST_FOREACH(const PAIRTYPE(vchType, Object)& item, vNamesO)
+    //  {
+    //    Object obj = item.second;
 
-        std::map<vchType, int>::const_iterator pos;
-        pos = killedAt.find (item.first);
-        if (pos != killedAt.end () && pos->second >= vNamesI[item.first])
-          {
-            /* Note:  When a player is killed due to self-destruct,
-               then we have equality in the heights above.  This is
-               fine and should be considered to be "dead".  */
-            obj.push_back (Pair("dead", 1));
-          }
+    //    std::map<vchType, int>::const_iterator pos;
+    //    pos = killedAt.find (item.first);
+    //    if (pos != killedAt.end () && pos->second >= vNamesI[item.first])
+    //      {
+    //        /* Note:  When a player is killed due to self-destruct,
+    //           then we have equality in the heights above.  This is
+    //           fine and should be considered to be "dead".  */
+    //        obj.push_back (Pair("dead", 1));
+    //      }
 
-        oRes.push_back (obj);
-      }
+    //    oRes.push_back (obj);
+    //  }
 
     return oRes;
 }
@@ -1306,8 +1306,8 @@ name_register (const Array& params, bool fHelp)
               "Register a new player name according to the 'new-style rules'."
               + HelpRequiringPassphrase ());
 
-  if (!ForkInEffect (FORK_CARRYINGCAP, nBestHeight))
-    throw std::runtime_error ("name_register is not yet available");
+  //if (!ForkInEffect (FORK_CARRYINGCAP, nBestHeight))
+  //  throw std::runtime_error ("name_register is not yet available");
 
   const std::string& name = params[0].get_str ();
   if (!IsValidPlayerName (name))
@@ -2364,11 +2364,13 @@ ConnectInputsGameTx (DatabaseSet& dbset,
         //vchType name;
         //if (!IsPlayerDeathInput (tx.vin[i], name))
         //  return error ("ConnectInputsGameTx: prev is no player death");
+		vchType name;
+		DecodeNameFromTransaction(tx.vin[i], name);
 
-        //CNameIndex nidx(txPos, pindexBlock->nHeight,
-        //                vchFromString (VALUE_DEAD));
-        //if (!dbset.name ().PushEntry (name, nidx))
-        //  return error ("ConnectInputsGameTx: failed to write to name DB");
+        CNameIndex nidx(txPos, pindexBlock->nHeight,
+                        vchFromString (VALUE_DEAD));
+        if (!dbset.name ().PushEntry (name, nidx))
+          return error ("ConnectInputsGameTx: failed to write to name DB");
     }
 
     return true;
@@ -2387,12 +2389,13 @@ DisconnectInputsGameTx (DatabaseSet& dbset, const CTransaction& tx,
         if (tx.vin[i].prevout.IsNull ())
           continue;
 
-        //vchType name;
         //if (!IsPlayerDeathInput (tx.vin[i], name))
         //  return error ("DisconnectInputsGameTx: prev is no player death");
+		vchType name;
+		DecodeNameFromTransaction(tx.vin[i], name);
 
-        //if (!dbset.name ().PopEntry (name, pindexBlock->nHeight))
-        //  return error ("DisconnectInputsGameTx: failed to pop entry");
+        if (!dbset.name ().PopEntry (name, pindexBlock->nHeight))
+          return error ("DisconnectInputsGameTx: failed to pop entry");
       }
 
     return true;
@@ -2517,10 +2520,10 @@ CHuntercoinHooks::ConnectInputs (DatabaseSet& dbset,
               }
             else
               {
-                if (!ForkInEffect (FORK_CARRYINGCAP, pindexBlock->nHeight))
-                  return error ("ConnectInputsHook: new-style name_firstupdate"
-                                " not allowed at height %d",
-                                pindexBlock->nHeight);
+                //if (!ForkInEffect (FORK_CARRYINGCAP, pindexBlock->nHeight))
+                //  return error ("ConnectInputsHook: new-style name_firstupdate"
+                //                " not allowed at height %d",
+                //                pindexBlock->nHeight);
 
                 /* Otherwise, no more checks required for a new-style
                    name_firstupdate.  */
@@ -2567,14 +2570,14 @@ CHuntercoinHooks::ConnectInputs (DatabaseSet& dbset,
               return error ("ConnectInputsHook: multiple name_update operations"
                             " on the same name");
 
-            /* Before the life-stealing fork, enforce that the coin
-               amount matches exactly.  Afterwards, we only require that
-               it is increasing over time (which is checked below).  */
-            /* FIXME: Remove check after the fork has passed.  */
-            if (!ForkInEffect (FORK_LIFESTEAL, pindexBlock->nHeight)
-                  && tx.vout[nOut].nValue != prevCoinAmount)
-              return error ("ConnectInputsHook: name_update tx:"
-                            " incorrect amount of the locked coin");
+            ///* Before the life-stealing fork, enforce that the coin
+            //   amount matches exactly.  Afterwards, we only require that
+            //   it is increasing over time (which is checked below).  */
+            ///* FIXME: Remove check after the fork has passed.  */
+            //if (!ForkInEffect (FORK_LIFESTEAL, pindexBlock->nHeight)
+            //      && tx.vout[nOut].nValue != prevCoinAmount)
+            //  return error ("ConnectInputsHook: name_update tx:"
+            //                " incorrect amount of the locked coin");
 
             /* Check that the locked amount is increasing over time.  The
                actual check for minimum fees is done by the move validation

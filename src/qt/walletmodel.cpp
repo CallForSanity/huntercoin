@@ -245,8 +245,8 @@ QString WalletModel::nameRegister(const QString &name, const std::string &data)
 {
   const std::string strName = name.toStdString();
 
-  if (!ForkInEffect (FORK_CARRYINGCAP, nBestHeight))
-    return tr("name_register is not yet available");
+  //if (!ForkInEffect (FORK_CARRYINGCAP, nBestHeight))
+  //  return tr("name_register is not yet available");
 
   if (!IsValidPlayerName (strName))
     throw tr("invalid player name");
