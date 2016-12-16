@@ -2664,53 +2664,53 @@ bool CHuntercoinHooks::CheckTransaction(const CTransaction& tx)
     if (!good)
         return error("name transaction has unknown script format");
 
-    Game::Move m;
-    switch (op)
-    {
-        case OP_NAME_NEW:
-            if (vvch[0].size() != 20)
-                return error("name_new tx with incorrect hash length");
-            break;
+    //Game::Move m;
+    //switch (op)
+    //{
+    //    case OP_NAME_NEW:
+    //        if (vvch[0].size() != 20)
+    //            return error("name_new tx with incorrect hash length");
+    //        break;
 
-        case OP_NAME_FIRSTUPDATE:
-          {
-            unsigned valueInd;
-            if (vvch.size () == 2)
-              valueInd = 1;
-            else
-              {
-                assert (vvch.size () == 3);
-                valueInd = 2;
-                if (vvch[1].size() > 20)
-                  return error ("name_firstupdate tx with rand too big");
-              }
+    //    case OP_NAME_FIRSTUPDATE:
+    //      {
+    //        unsigned valueInd;
+    //        if (vvch.size () == 2)
+    //          valueInd = 1;
+    //        else
+    //          {
+    //            assert (vvch.size () == 3);
+    //            valueInd = 2;
+    //            if (vvch[1].size() > 20)
+    //              return error ("name_firstupdate tx with rand too big");
+    //          }
 
-            if (vvch[valueInd].size() > MAX_VALUE_LENGTH)
-                return error("name_firstupdate tx with value too long");
-            m.Parse(stringFromVch(vvch[0]), stringFromVch(vvch[valueInd]));
-            if (!m)
-                return error("name_firstupdate : incorrect game move");
+    //        if (vvch[valueInd].size() > MAX_VALUE_LENGTH)
+    //            return error("name_firstupdate tx with value too long");
+    //        m.Parse(stringFromVch(vvch[0]), stringFromVch(vvch[valueInd]));
+    //        if (!m)
+    //            return error("name_firstupdate : incorrect game move");
 
-            /* Move parsing already checks for valid player name, which
-               in turn includes the length check.  */
-            assert (vvch[0].size () <= MAX_NAME_LENGTH);
-            break;
-          }
+    //        /* Move parsing already checks for valid player name, which
+    //           in turn includes the length check.  */
+    //        assert (vvch[0].size () <= MAX_NAME_LENGTH);
+    //        break;
+    //      }
 
-        case OP_NAME_UPDATE:
-            if (vvch[1].size() > MAX_VALUE_LENGTH)
-                return error("name_update tx with value too long");
-            m.Parse(stringFromVch(vvch[0]), stringFromVch(vvch[1]));
-            if (!m)
-                return error("name_update : incorrect game move");
-            /* Move parsing already checks for valid player name, which
-               in turn includes the length check.  */
-            assert (vvch[0].size () <= MAX_NAME_LENGTH);
-            break;
+    //    case OP_NAME_UPDATE:
+    //        if (vvch[1].size() > MAX_VALUE_LENGTH)
+    //            return error("name_update tx with value too long");
+    //        m.Parse(stringFromVch(vvch[0]), stringFromVch(vvch[1]));
+    //        if (!m)
+    //            return error("name_update : incorrect game move");
+    //        /* Move parsing already checks for valid player name, which
+    //           in turn includes the length check.  */
+    //        assert (vvch[0].size () <= MAX_NAME_LENGTH);
+    //        break;
 
-        default:
-            return error("name transaction has unknown op");
-    }
+    //    default:
+    //        return error("name transaction has unknown op");
+    //}
     return true;
 }
 
@@ -2866,6 +2866,8 @@ CHuntercoinHooks::DisconnectBlock (CBlock& block, DatabaseSet& dbset,
 
 bool CHuntercoinHooks::GenesisBlock(CBlock& block)
 {
+	std::cout << std::hex << bnInitialHashTarget[0].GetCompact() << std::endl;
+
     block = CBlock();
     block.hashPrevBlock = 0;
     block.nVersion = 1;
