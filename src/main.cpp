@@ -36,8 +36,8 @@ map<COutPoint, CInPoint> mapNextTx;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
 uint256 hashGenesisBlock;
-CBigNum bnProofOfWorkLimit[NUM_ALGOS] = { CBigNum(~uint256(0) >> 32), CBigNum(~uint256(0) >> 20) };
-CBigNum bnInitialHashTarget[NUM_ALGOS] = { CBigNum(~uint256(0) >> 32), CBigNum(~uint256(0) >> 20) };
+CBigNum bnProofOfWorkLimit[NUM_ALGOS] = { CBigNum(~uint256(0) >> 0), CBigNum(~uint256(0) >> 0) }; // FIXME
+CBigNum bnInitialHashTarget[NUM_ALGOS] = { CBigNum(~uint256(0) >> 0), CBigNum(~uint256(0) >> 0) };
 const int nInitialBlockThreshold = 0; // Regard blocks up until N-threshold as "initial download"
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
@@ -463,7 +463,7 @@ bool CTransaction::CheckTransaction() const
 
     if (IsCoinBase())
     {
-        if (vin[0].scriptSig.size() < 2 || vin[0].scriptSig.size() > 230)
+        if (vin[0].scriptSig.size() < 2 || vin[0].scriptSig.size() > 232)
             return error("CTransaction::CheckTransaction() : coinbase script size");
     }
     else

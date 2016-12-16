@@ -62,7 +62,7 @@ extern void rescanfornames();
 extern Value sendtoaddress(const Array& params, bool fHelp);
 
 uint256 hashHuntercoinGenesisBlock[2] = {
-        uint256("00000000db7eb7a9e1a06cf995363dcdc4c28e8ae04827a961942657db9a1631"),    // Main net
+        uint256("d5638309b29ba04e04b92ec7f5703c8634762d0861f7f016d760ad61cc736fc6"),    // Main net
         uint256("000000492c361a01ce7558a3bfb198ea3ff2f86f8b0c2e00d26135c53f4acbf7")     // Test net
     };
 
@@ -2876,7 +2876,7 @@ bool CHuntercoinHooks::GenesisBlock(CBlock& block)
     txNew.vout[0].nValue = GetBlockValue(0, 0);
     if (fTestNet)
     {
-        txNew.vin[0].scriptSig = CScript() << vchFromString("\nHuntercoin test net\n");
+        txNew.vin[0].scriptSig = CScript() << vchFromString("\NoFrontieres test net\n");
         txNew.vout[0].scriptPubKey.SetBitcoinAddress("hRDGZuirWznh25mqZM5bKmeEAcw7dmDwUx"); // TODO set own keypair here
         txNew.vout[0].nValue = 100 * COIN;     // Preallocated coins for easy testing and giveaway
         block.nTime    = 1391193136;
@@ -2886,16 +2886,16 @@ bool CHuntercoinHooks::GenesisBlock(CBlock& block)
     {
         const char *timestamp =
                 "\n"
-                "Huntercoin genesis timestamp\n"
+                "NoFrontieres genesis timestamp\n"
                 "31/Jan/2014 20:10 GMT\n"
                 "Bitcoin block 283440: 0000000000000001795d3c369b0746c0b5d315a6739a7410ada886de5d71ca86\n"
                 "Litecoin block 506479: 77c49384e6e8dd322da0ebb32ca6c8f047d515d355e9f22b116430a888fffd38\n"
             ;
         txNew.vin[0].scriptSig = CScript() << vchFromString(std::string(timestamp));
-        txNew.vout[0].scriptPubKey.SetBitcoinAddress("HVguPy1tWgbu9cKy6YGYEJFJ6RD7z7F7MJ");
+		txNew.vout[0].scriptPubKey.SetBitcoinAddress("HVguPy1tWgbu9cKy6YGYEJFJ6RD7z7F7MJ"); // TODO set own keypair here
         txNew.vout[0].nValue = 85000 * COIN;     // Preallocated coins for bounties and giveaway
         block.nTime    = 1391199780;
-        block.nNonce   = 1906435634u;
+		block.nNonce = 16812831u;
     }
     block.vtx.push_back(txNew);
     block.hashMerkleRoot = block.BuildMerkleTree(false);
