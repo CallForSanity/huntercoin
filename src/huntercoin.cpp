@@ -2929,7 +2929,7 @@ string CHuntercoinHooks::IrcPrefix()
 
 unsigned short GetDefaultPort()
 {
-    return fTestNet ? 18398 : 8398;
+    return fTestNet ? 18408 : 8408;
 }
 /*
 To calculate the decimal address from a IP, perform the following calculation =
