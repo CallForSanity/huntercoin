@@ -62,7 +62,7 @@ extern void rescanfornames();
 extern Value sendtoaddress(const Array& params, bool fHelp);
 
 uint256 hashHuntercoinGenesisBlock[2] = {
-        uint256("d5638309b29ba04e04b92ec7f5703c8634762d0861f7f016d760ad61cc736fc6"),    // Main net
+        uint256("e2a583833050234bf9cf1a17daa23f0ff5cd4f13bd07e9cd8de69a6d5f8ee0f1"),    // Main net
         uint256("000000492c361a01ce7558a3bfb198ea3ff2f86f8b0c2e00d26135c53f4acbf7")     // Test net
     };
 
@@ -2866,8 +2866,6 @@ CHuntercoinHooks::DisconnectBlock (CBlock& block, DatabaseSet& dbset,
 
 bool CHuntercoinHooks::GenesisBlock(CBlock& block)
 {
-	std::cout << std::hex << bnInitialHashTarget[0].GetCompact() << std::endl;
-
     block = CBlock();
     block.hashPrevBlock = 0;
     block.nVersion = 1;
@@ -2879,7 +2877,7 @@ bool CHuntercoinHooks::GenesisBlock(CBlock& block)
     if (fTestNet)
     {
         txNew.vin[0].scriptSig = CScript() << vchFromString("\NoFrontieres test net\n");
-        txNew.vout[0].scriptPubKey.SetBitcoinAddress("hRDGZuirWznh25mqZM5bKmeEAcw7dmDwUx"); // TODO set own keypair here
+        txNew.vout[0].scriptPubKey.SetBitcoinAddress("HDoFXWEGWYvV56Ynw7rTdkLZCR1MhCYgGa");
         txNew.vout[0].nValue = 100 * COIN;     // Preallocated coins for easy testing and giveaway
         block.nTime    = 1391193136;
         block.nNonce   = 1997599826u;
@@ -2894,10 +2892,10 @@ bool CHuntercoinHooks::GenesisBlock(CBlock& block)
                 "Litecoin block 506479: 77c49384e6e8dd322da0ebb32ca6c8f047d515d355e9f22b116430a888fffd38\n"
             ;
         txNew.vin[0].scriptSig = CScript() << vchFromString(std::string(timestamp));
-		txNew.vout[0].scriptPubKey.SetBitcoinAddress("HVguPy1tWgbu9cKy6YGYEJFJ6RD7z7F7MJ"); // TODO set own keypair here
+		txNew.vout[0].scriptPubKey.SetBitcoinAddress("HDoFXWEGWYvV56Ynw7rTdkLZCR1MhCYgGa");
         txNew.vout[0].nValue = 85000 * COIN;     // Preallocated coins for bounties and giveaway
         block.nTime    = 1391199780;
-		block.nNonce = 16812831u;
+		block.nNonce = 16837169u;
     }
     block.vtx.push_back(txNew);
     block.hashMerkleRoot = block.BuildMerkleTree(false);
@@ -2926,7 +2924,7 @@ bool CHuntercoinHooks::Lockin(int nHeight, uint256 hash)
 
 string CHuntercoinHooks::IrcPrefix()
 {
-    return "huntercoin";
+    return "NoFrontieres";
 }
 
 unsigned short GetDefaultPort()
@@ -2946,12 +2944,12 @@ const char *strDNSSeed[] = { NULL };
 string GetDefaultDataDirSuffix() {
 #ifdef __WXMSW__
     // Windows
-    return string("Huntercoin");
+    return string("NoFrontieres");
 #else
 #ifdef MAC_OSX
-    return string("Huntercoin");
+    return string("NoFrontieres");
 #else
-    return string(".huntercoin");
+    return string(".nofrontieres");
 #endif
 #endif
 }
