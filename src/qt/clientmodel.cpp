@@ -57,9 +57,9 @@ QDateTime ClientModel::getLastBlockDate() const
     {
         // Genesis block's time
         if (fTestNet)
-            return QDateTime::fromTime_t(1296688602);
+			return QDateTime::fromTime_t(1482172893);
         else
-            return QDateTime::fromTime_t(1303000001);
+			return QDateTime::fromTime_t(1482172893);
     }
 }
 
